@@ -329,13 +329,13 @@ abstract contract ERC20Detailed is IERC20 {
     uint8 private _decimals;
 
     constructor(
-        string memory name,
-        string memory symbol,
-        uint8 decimals
+        string memory getName,
+        string memory getSymbol,
+        uint8 getDecimals
     ) {
-        _name = name;
-        _symbol = symbol;
-        _decimals = decimals;
+        _name = getName;
+        _symbol = getSymbol;
+        _decimals = getDecimals;
     }
 
     /**
@@ -383,7 +383,7 @@ contract MemeLottoToken is ERC20, Ownable, ERC20Detailed {
     address[] private lockedAddressList;
     uint256 private totalCoins;
 
-    constructor() public ERC20Detailed("MemeLotto", "MUT", 9) {
+    constructor() ERC20Detailed("MemeLotto", "MUT", 9) {
         totalCoins = 1000000000 * 10**uint256(decimals());
         _mint(owner(), totalCoins);
         ERC20.transfer(
@@ -511,7 +511,8 @@ contract MemeLottoToken is ERC20, Ownable, ERC20Detailed {
         return bal.sub(locked);
     }
 
-    fallback() external payable {
+    // The receive ether function handles incoming ether
+    receive() external payable {
         revert();
     }
 
@@ -584,7 +585,6 @@ contract MemeLottoToken is ERC20, Ownable, ERC20Detailed {
 
     /**
      * return the total amount of circulating coins that are not locked at the current time
-     *
      */
     function getCirculatingSupplyTotal()
         external
@@ -703,7 +703,9 @@ contract MemeLottoToken is ERC20, Ownable, ERC20Detailed {
         emit Transfer(lockedAddress, address(0), lockedAmount);
     }
 
-    // Return Address is locked
+    /**
+     * return Address is locked
+     */
     function isAddressLocked(address lockedAddress)
         internal
         view
